@@ -197,7 +197,7 @@ class SASceneNet(nn.Module):
         y5 = self.lastConvSEM2(y4)
 
         # Attention Mechanism
-        e7 = self.sigmoid(e6) + self.sigmoid(y5)
+        e7 = self.sigmoid(e6) * self.sigmoid(y5)
 
         # --------------------------------#
         #            Classifier           #

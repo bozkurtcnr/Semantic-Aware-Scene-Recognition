@@ -147,7 +147,7 @@ class SASceneNet(nn.Module):
         self.sigmoid = nn.Sigmoid()
         self.avgpool7 = nn.AvgPool2d(7, stride=1)
         self.avgpool3 = nn.AvgPool2d(3, stride=1)
-        self.fc = nn.Linear(1024, scene_classes)
+        self.fc = nn.Linear(2048, scene_classes)
 
         # Loss
         self.criterion = nn.CrossEntropyLoss()

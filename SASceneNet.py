@@ -109,10 +109,11 @@ class SASceneNet(nn.Module):
         #   RGB & Semantic Branch Classifiers  #
         # ------------------------------------ #
         # Semantic Scene Classification Layers
-        self.fc_SEM = nn.Linear(512, scene_classes)
+        self.fc_SEM = nn.Linear(2048, scene_classes)
 
         # RGB Scene Classification Layers.
-        self.fc_RGB = nn.Linear(size_fc_RGB, scene_classes)
+        self.fc_RGB = nn.Linear(2048, scene_classes)
+        #size_fc_RGB
 
         # --------------------------------#
         #         Attention Module        #

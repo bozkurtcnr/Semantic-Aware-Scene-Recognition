@@ -129,12 +129,12 @@ class SASceneNet(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM1 = nn.Sequential(
-            nn.Conv2d(512, 1024, kernel_size=3, bias=False),
-            nn.BatchNorm2d(1024),
+            nn.Conv2d(512, 512, kernel_size=3, bias=False),
+            nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM2 = nn.Sequential(
-            nn.Conv2d(1024, 1024, kernel_size=3, bias=False),
+            nn.Conv2d(512, 1024, kernel_size=3, bias=False),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
         )

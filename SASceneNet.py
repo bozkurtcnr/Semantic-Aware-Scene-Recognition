@@ -64,7 +64,7 @@ class SASceneNet(nn.Module):
         # ------------------------------- #
         if arch == 'ResNet-18':
             # ResNet-18 Network
-            base = resnet.resnet18(pretrained=False)
+            base = resnet.resnet18(pretrained=True)
 
             # Size parameters for ResNet-18
             size_fc_RGB = 512

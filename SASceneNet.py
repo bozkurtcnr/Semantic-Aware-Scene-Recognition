@@ -104,6 +104,7 @@ class SASceneNet(nn.Module):
         self.in_block_sem_1 = BasicBlockSem(64, 128, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_2 = BasicBlockSem(128, 256, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_3 = BasicBlockSem(256, 512, kernel_size=3, stride=2, padding=1)
+        self.in_block_sem_4 = BasicBlockSem(512, 512, kernel_size=3, stride=2, padding=1)
 
         # -------------------------------------#
         #   RGB & Semantic Branch Classifiers  #
@@ -180,6 +181,7 @@ class SASceneNet(nn.Module):
         y1 = self.in_block_sem_1(y)
         y2 = self.in_block_sem_2(y1)
         y3 = self.in_block_sem_3(y2)
+        y3 = self.in_block_sem_4(y3)
 
         # Semantic Classification Layer
         act_sem = self.avgpool7(y3)

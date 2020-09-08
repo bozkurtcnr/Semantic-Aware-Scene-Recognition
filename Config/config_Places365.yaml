@@ -14,9 +14,9 @@ DATALOADER:
     NUM_WORKERS: 8
 
 MODEL:
-    ARCH: ResNet-50
+    ARCH: ResNet-18
     PATH: ./Data/Model Zoo/places365_standard/
-    NAME: resnet50_places365
+    NAME: SAScene_ResNet18_Places
     ONLY_RGB: FALSE
     ONLY_SEM: FALSE
 

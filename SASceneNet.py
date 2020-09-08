@@ -109,11 +109,10 @@ class SASceneNet(nn.Module):
         #   RGB & Semantic Branch Classifiers  #
         # ------------------------------------ #
         # Semantic Scene Classification Layers
-        self.fc_SEM = nn.Linear(2048, scene_classes)
+        self.fc_SEM = nn.Linear(512, scene_classes)
 
         # RGB Scene Classification Layers.
-        self.fc_RGB = nn.Linear(2048, scene_classes)
-        #size_fc_RGB
+        self.fc_RGB = nn.Linear(size_fc_RGB, scene_classes)
 
         # --------------------------------#
         #         Attention Module        #
@@ -125,8 +124,8 @@ class SASceneNet(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.lastConvRGB2 = nn.Sequential(
-            nn.Conv2d(sizes_lastConv[2], 2048, kernel_size=3, bias=False),
-            nn.BatchNorm2d(2048),
+            nn.Conv2d(sizes_lastConv[2], 1024, kernel_size=3, bias=False),
+            nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM1 = nn.Sequential(
@@ -135,8 +134,8 @@ class SASceneNet(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM2 = nn.Sequential(
-            nn.Conv2d(1024, 2048, kernel_size=3, bias=False),
-            nn.BatchNorm2d(2048),
+            nn.Conv2d(1024, 1024, kernel_size=3, bias=False),
+            nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
         )
 

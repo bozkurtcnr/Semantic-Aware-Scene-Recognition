@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet
-from torchvision.models import resnext
+from torchvision.models import resnext101_32x8d
 
 
 class BasicBlockSem(nn.Module):

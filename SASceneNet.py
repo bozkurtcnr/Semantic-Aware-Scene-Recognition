@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet
+from torchvision.models import resnext
 
 
 class BasicBlockSem(nn.Module):
@@ -72,6 +73,7 @@ class SASceneNet(nn.Module):
         elif arch == 'ResNet-50':
             # ResNet-50 Network
             base = resnet.resnet50(pretrained=True)
+            # base = resnext.ResNeXt-101-32x8d(pretrained=True)
 
             # Size parameters for ResNet-50
             size_fc_RGB = 2048
@@ -104,12 +106,13 @@ class SASceneNet(nn.Module):
         self.in_block_sem_1 = BasicBlockSem(64, 128, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_2 = BasicBlockSem(128, 256, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_3 = BasicBlockSem(256, 512, kernel_size=3, stride=2, padding=1)
+        self.in_block_sem_4 = BasicBlockSem(512, 1024, kernel_size=3, stride=2, padding=1)
 
         # -------------------------------------#
         #   RGB & Semantic Branch Classifiers  #
         # ------------------------------------ #
         # Semantic Scene Classification Layers
-        self.fc_SEM = nn.Linear(512, scene_classes)
+        self.fc_SEM = nn.Linear(1024, scene_classes)
 
         # RGB Scene Classification Layers.
         self.fc_RGB = nn.Linear(size_fc_RGB, scene_classes)
@@ -124,18 +127,18 @@ class SASceneNet(nn.Module):
             nn.ReLU(inplace=True),
         )
         self.lastConvRGB2 = nn.Sequential(
-            nn.Conv2d(sizes_lastConv[2], 1024, kernel_size=3, bias=False),
-            nn.BatchNorm2d(1024),
+            nn.Conv2d(sizes_lastConv[2], 2048, kernel_size=3, bias=False),
+            nn.BatchNorm2d(2048),
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM1 = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=3, bias=False),
-            nn.BatchNorm2d(512),
+            nn.Conv2d(1024, 1024, kernel_size=3, bias=False),
+            nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
         )
         self.lastConvSEM2 = nn.Sequential(
-            nn.Conv2d(512, 1024, kernel_size=3, bias=False),
-            nn.BatchNorm2d(1024),
+            nn.Conv2d(1024, 2048, kernel_size=3, bias=False),
+            nn.BatchNorm2d(2048),
             nn.ReLU(inplace=True),
         )
 
@@ -180,9 +183,10 @@ class SASceneNet(nn.Module):
         y1 = self.in_block_sem_1(y)
         y2 = self.in_block_sem_2(y1)
         y3 = self.in_block_sem_3(y2)
+        y4 = self.in_block_sem_4(y3)
 
         # Semantic Classification Layer
-        act_sem = self.avgpool7(y3)
+        act_sem = self.avgpool7(y4)
         act_sem = act_sem.view(act_sem.size(0), -1)
         act_sem = self.dropout(act_sem)
         act_sem = self.fc_SEM(act_sem)
@@ -193,11 +197,11 @@ class SASceneNet(nn.Module):
         e5 = self.lastConvRGB1(e4)
         e6 = self.lastConvRGB2(e5)
 
-        y4 = self.lastConvSEM1(y3)
-        y5 = self.lastConvSEM2(y4)
+        y5 = self.lastConvSEM1(y4)
+        y6 = self.lastConvSEM2(y5)
 
         # Attention Mechanism
-        e7 = e6 * self.sigmoid(y5)
+        e7 = e6 * self.sigmoid(y6)
 
         # --------------------------------#
         #            Classifier           #

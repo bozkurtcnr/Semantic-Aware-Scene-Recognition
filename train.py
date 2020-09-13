@@ -48,7 +48,7 @@ class SemBranchNew(nn.Module):
     """
 
     def __init__(self, scene_classes, semantic_classes=151):
-        super(SemBranch, self).__init__()
+        super(SemBranchNew, self).__init__()
 
         # Semantic Branch
         self.in_block_sem = nn.Sequential(

@@ -60,12 +60,12 @@ class SemBranchNew(nn.Module):
         self.in_block_sem_1 = BasicBlockSem(64, 128, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_2 = BasicBlockSem(128, 256, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_3 = BasicBlockSem(256, 512, kernel_size=3, stride=2, padding=1)
-        self.in_block_sem_4 = BasicBlockSem(512, 1024, kernel_size=3, stride=2, padding=1)
+        self.in_block_sem_4 = BasicBlockSem(512, 512, kernel_size=3, stride=2, padding=1)
 
         # Semantic Scene Classification Layers
         self.dropout = nn.Dropout(0.3)
         self.avgpool = nn.AvgPool2d(7, stride=1)
-        self.fc_SEM = nn.Linear(1024, scene_classes)
+        self.fc_SEM = nn.Linear(512, scene_classes)
 
         # Loss
         self.criterion = nn.CrossEntropyLoss()

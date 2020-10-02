@@ -60,62 +60,21 @@ def train(model,
     global_steps_list = []
 
     # training loop
-    model.train()
+    #model.train()
     for epoch in range(num_epochs):
-        for i, (mini_batch) in enumerate(dataloader):     
-            RGB_image = mini_batch['Image'].cuda()
-            semantic_mask = mini_batch['Semantic'].cuda()
-            semantic_scores = mini_batch['Semantic Scores'].cuda()
-            sceneLabelGT = mini_batch['Scene Index'].cuda()
-            
-            output = model(titletext, titletext_len)
-
-            loss = criterion(output, labels)
+        printf(train_loader)
+       for i, (inputs, targets) in enumerate(train_loader):
+            # clear the gradients
             optimizer.zero_grad()
+            # compute the model output
+            yhat = model(inputs)
+            # calculate loss
+            loss = criterion(yhat, targets)
+            # credit assignment
             loss.backward()
+            # update model weights
             optimizer.step()
-
-            # update running values
-            running_loss += loss.item()
-            global_step += 1
-
-            # evaluation step
-            if global_step % eval_every == 0:
-                model.eval()
-                with torch.no_grad():                    
-                  # validation loop
-                  for (labels, (title, title_len), (text, text_len), (titletext, titletext_len)), _ in valid_loader:
-                      labels = labels.to(device)
-                      titletext = titletext.to(device)
-                      titletext_len = titletext_len.to(device)
-                      output = model(titletext, titletext_len)
-
-                      loss = criterion(output, labels)
-                      valid_running_loss += loss.item()
-
-                # evaluation
-                average_train_loss = running_loss / eval_every
-                average_valid_loss = valid_running_loss / len(valid_loader)
-                train_loss_list.append(average_train_loss)
-                valid_loss_list.append(average_valid_loss)
-                global_steps_list.append(global_step)
-
-                # resetting running values
-                running_loss = 0.0                
-                valid_running_loss = 0.0
-                model.train()
-
-                # print progress
-                print('Epoch [{}/{}], Step [{}/{}], Train Loss: {:.4f}, Valid Loss: {:.4f}'
-                      .format(epoch+1, num_epochs, global_step, num_epochs*len(train_loader),
-                              average_train_loss, average_valid_loss))
-                
-                # checkpoint
-                if best_valid_loss > average_valid_loss:
-                    best_valid_loss = average_valid_loss
-                    save_checkpoint(file_path + '/model.pt', model, optimizer, best_valid_loss)
-                    save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
-    
+            
     save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
     print('Finished Training!')
 

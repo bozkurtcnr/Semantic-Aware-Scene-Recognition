@@ -62,7 +62,7 @@ def train(model,
     # training loop
     #model.train()
     for epoch in range(num_epochs):
-        printf(train_loader)
+       printf(train_loader)
        for i, (inputs, targets) in enumerate(train_loader):
             # clear the gradients
             optimizer.zero_grad()

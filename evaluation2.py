@@ -24,9 +24,12 @@ import yaml
 
 global USE_CUDA, classes, CONFIG
 
-device = torch.device("cuda" if USE_CUDA else "cpu")
 parser = argparse.ArgumentParser(description='Semantic-Aware Scene Recognition Evaluation 2')
 parser.add_argument('--ConfigPath', metavar='DIR', help='Configuration file path')
+args = parser.parse_args()
+CONFIG = yaml.safe_load(open(args.ConfigPath, 'r'))
+USE_CUDA = torch.cuda.is_available()
+device = torch.device("cuda" if USE_CUDA else "cpu")
 
 def evaluationDataLoader(dataloader, model, set):
     batch_time = utils.AverageMeter()
@@ -144,9 +147,7 @@ def evaluationDataLoader(dataloader, model, set):
 
 
 # Decode CONFIG file information
-args = parser.parse_args()
-CONFIG = yaml.safe_load(open(args.ConfigPath, 'r'))
-USE_CUDA = torch.cuda.is_available()
+
 
 ########################################################################################################################
 traindir = os.path.join(CONFIG['DATASET']['ROOT'], CONFIG['DATASET']['NAME'])

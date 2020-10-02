@@ -9,6 +9,7 @@ import os
 import time
 import torch
 import argparse
+import torch.nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim

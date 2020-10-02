@@ -201,7 +201,7 @@ def train(model,
     print('Finished Training!')
 
 
-model = LSTM().to(device)
+model = SemBranchNew(scene_classes=CONFIG['DATASET']['N_CLASSES_SCENE'], semantic_classes=CONFIG['DATASET']['N_CLASSES_SEM']).to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 train(model=model, optimizer=optimizer, num_epochs=10)
@@ -214,7 +214,7 @@ print('-' * 65)
 
 
 # Instantiate network
-model = SemBranchNew(scene_classes=CONFIG['DATASET']['N_CLASSES_SCENE'], semantic_classes=CONFIG['DATASET']['N_CLASSES_SEM'])
+
 
 
 # Move Model to GPU an set it to evaluation mode

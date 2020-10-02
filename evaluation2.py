@@ -192,7 +192,7 @@ def train(model,
             semantic_mask = mini_batch['Semantic'].cuda()
             semantic_scores = mini_batch['Semantic Scores'].cuda()
             sceneLabelGT = mini_batch['Scene Index'].cuda()
-   '''         # clear the gradients
+            '''      
             optimizer.zero_grad()
             # compute the model output
             yhat = model(inputs)
@@ -202,7 +202,7 @@ def train(model,
             loss.backward()
             # update model weights
             optimizer.step()
-   '''      
+            '''      
    # save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
     print('Finished Training!')
 

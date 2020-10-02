@@ -170,7 +170,7 @@ def train(model,
           valid_loader = val_loader,
           num_epochs = 5,
           eval_every = len(train_loader) // 2,
-          file_path = destination_folder,
+         # file_path = destination_folder,
           best_valid_loss = float("Inf")):
     
     # initialize running values
@@ -197,7 +197,7 @@ def train(model,
             # update model weights
             optimizer.step()
             
-    save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
+   # save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
     print('Finished Training!')
 
 

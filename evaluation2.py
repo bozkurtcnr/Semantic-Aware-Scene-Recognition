@@ -21,6 +21,7 @@ from Libs.Utils.torchsummary import torchsummary
 import numpy as np
 import yaml
 
+global USE_CUDA, classes, CONFIG
 
 parser = argparse.ArgumentParser(description='Semantic-Aware Scene Recognition Evaluation 2')
 parser.add_argument('--ConfigPath', metavar='DIR', help='Configuration file path')
@@ -198,7 +199,7 @@ def evaluationDataLoader(dataloader, model, set):
         return top1.avg, top2.avg, top5.avg, losses.avg, ClassTPDic
 
 
-global USE_CUDA, classes, CONFIG
+
 
 # Decode CONFIG file information
 args = parser.parse_args()

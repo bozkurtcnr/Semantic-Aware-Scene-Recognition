@@ -26,66 +26,6 @@ global USE_CUDA, classes, CONFIG
 parser = argparse.ArgumentParser(description='Semantic-Aware Scene Recognition Evaluation 2')
 parser.add_argument('--ConfigPath', metavar='DIR', help='Configuration file path')
 
-########################################################################################################################
-traindir = os.path.join(CONFIG['DATASET']['ROOT'], CONFIG['DATASET']['NAME'])
-valdir = os.path.join(CONFIG['DATASET']['ROOT'], CONFIG['DATASET']['NAME'])
-
-train_dataset = SUN397Dataset(traindir, "train")
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=CONFIG['VALIDATION']['BATCH_SIZE']['TRAIN'],
-                                               shuffle=False, num_workers=CONFIG['DATALOADER']['NUM_WORKERS'], pin_memory=True)
-
-val_dataset = SUN397Dataset(valdir, "val", tencrops=CONFIG['VALIDATION']['TEN_CROPS'])
-val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=CONFIG['VALIDATION']['BATCH_SIZE']['TEST'],
-                                             shuffle=False, num_workers=CONFIG['DATALOADER']['NUM_WORKERS'], pin_memory=True)
-
-classes = train_dataset.classes
-
-# Training Function
-
-def train(model,
-          optimizer,
-          criterion = nn.BCELoss(),
-          train_loader = train_loader,
-          valid_loader = val_loader,
-          num_epochs = 5,
-          eval_every = len(train_loader) // 2,
-          file_path = destination_folder,
-          best_valid_loss = float("Inf")):
-    
-    # initialize running values
-    running_loss = 0.0
-    valid_running_loss = 0.0
-    global_step = 0
-    train_loss_list = []
-    valid_loss_list = []
-    global_steps_list = []
-
-    # training loop
-    #model.train()
-    for epoch in range(num_epochs):
-       printf(train_loader)
-       for i, (inputs, targets) in enumerate(train_loader):
-            # clear the gradients
-            optimizer.zero_grad()
-            # compute the model output
-            yhat = model(inputs)
-            # calculate loss
-            loss = criterion(yhat, targets)
-            # credit assignment
-            loss.backward()
-            # update model weights
-            optimizer.step()
-            
-    save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
-    print('Finished Training!')
-
-
-model = LSTM().to(device)
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-train(model=model, optimizer=optimizer, num_epochs=10)
-########################################################################################################################
-
 def evaluationDataLoader(dataloader, model, set):
     batch_time = utils.AverageMeter()
     losses = utils.AverageMeter()
@@ -205,6 +145,67 @@ def evaluationDataLoader(dataloader, model, set):
 args = parser.parse_args()
 CONFIG = yaml.safe_load(open(args.ConfigPath, 'r'))
 USE_CUDA = torch.cuda.is_available()
+
+########################################################################################################################
+traindir = os.path.join(CONFIG['DATASET']['ROOT'], CONFIG['DATASET']['NAME'])
+valdir = os.path.join(CONFIG['DATASET']['ROOT'], CONFIG['DATASET']['NAME'])
+
+train_dataset = SUN397Dataset(traindir, "train")
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=CONFIG['VALIDATION']['BATCH_SIZE']['TRAIN'],
+                                               shuffle=False, num_workers=CONFIG['DATALOADER']['NUM_WORKERS'], pin_memory=True)
+
+val_dataset = SUN397Dataset(valdir, "val", tencrops=CONFIG['VALIDATION']['TEN_CROPS'])
+val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=CONFIG['VALIDATION']['BATCH_SIZE']['TEST'],
+                                             shuffle=False, num_workers=CONFIG['DATALOADER']['NUM_WORKERS'], pin_memory=True)
+
+classes = train_dataset.classes
+
+# Training Function
+
+def train(model,
+          optimizer,
+          criterion = nn.BCELoss(),
+          train_loader = train_loader,
+          valid_loader = val_loader,
+          num_epochs = 5,
+          eval_every = len(train_loader) // 2,
+          file_path = destination_folder,
+          best_valid_loss = float("Inf")):
+    
+    # initialize running values
+    running_loss = 0.0
+    valid_running_loss = 0.0
+    global_step = 0
+    train_loss_list = []
+    valid_loss_list = []
+    global_steps_list = []
+
+    # training loop
+    #model.train()
+    for epoch in range(num_epochs):
+       printf(train_loader)
+       for i, (inputs, targets) in enumerate(train_loader):
+            # clear the gradients
+            optimizer.zero_grad()
+            # compute the model output
+            yhat = model(inputs)
+            # calculate loss
+            loss = criterion(yhat, targets)
+            # credit assignment
+            loss.backward()
+            # update model weights
+            optimizer.step()
+            
+    save_metrics(file_path + '/metrics.pt', train_loss_list, valid_loss_list, global_steps_list)
+    print('Finished Training!')
+
+
+model = LSTM().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+train(model=model, optimizer=optimizer, num_epochs=10)
+########################################################################################################################
+
 
 print('-' * 65)
 print("Evaluation starting...")

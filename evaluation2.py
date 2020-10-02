@@ -24,6 +24,7 @@ import yaml
 
 global USE_CUDA, classes, CONFIG
 
+device = torch.device("cuda" if USE_CUDA else "cpu")
 parser = argparse.ArgumentParser(description='Semantic-Aware Scene Recognition Evaluation 2')
 parser.add_argument('--ConfigPath', metavar='DIR', help='Configuration file path')
 

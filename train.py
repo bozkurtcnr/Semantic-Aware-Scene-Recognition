@@ -60,7 +60,6 @@ class SemBranchNew(nn.Module):
         self.in_block_sem_1 = BasicBlockSem(64, 128, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_2 = BasicBlockSem(128, 256, kernel_size=3, stride=2, padding=1)
         self.in_block_sem_3 = BasicBlockSem(256, 512, kernel_size=3, stride=2, padding=1)
-        self.in_block_sem_4 = BasicBlockSem(512, 512, kernel_size=3, stride=2, padding=1)
 
         # Semantic Scene Classification Layers
         self.dropout = nn.Dropout(0.3)
@@ -76,16 +75,15 @@ class SemBranchNew(nn.Module):
         y2 = self.in_block_sem_1(y)
         y3 = self.in_block_sem_2(y2)
         y4 = self.in_block_sem_3(y3)
-        y5 = self.in_block_sem_3(y4)
 
         # Semantic Classification Layer
-        act_sem = self.avgpool(y5)
+        act_sem = self.avgpool(y4)
         act_sem = act_sem.view(act_sem.size(0), -1)
         act_sem = self.dropout(act_sem)
         act_sem = self.fc_SEM(act_sem)
 
         act = act_sem
-        e5 = y5
+        e5 = y4
         act_rgb = act_sem
 
         return act, e5, act_rgb, act_sem

@@ -12,7 +12,7 @@ import argparse
 import torch.nn as nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
-import torch.optim
+import torch.optim as optim
 import torch.utils.data
 from train import SemBranchNew
 from Libs.Datasets.SUN397Dataset import SUN397Dataset
